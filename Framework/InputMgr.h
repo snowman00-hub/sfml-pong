@@ -23,6 +23,11 @@ private:
 	static std::list<sf::Keyboard::Key> heldKeys;
 	static std::list<sf::Keyboard::Key> upKeys;
 
+	static std::vector<int> mouseButtons; 
+	// 눌렀을때  1
+	// 누르는 중 2
+	// 뗏을때	 3
+
 	static std::unordered_map<Axis, AxisInfo> axisInfoMap;
 
 public:
@@ -41,5 +46,11 @@ public:
 
 	static float GetAxisRaw(Axis axis);
 	static float GetAxis(Axis axis);
+
+	static bool GetMouseButtonDown(sf::Mouse::Button button);
+	static bool GetMouseButtonUp(sf::Mouse::Button button);
+	static bool GetMouseButton(sf::Mouse::Button button);
+
+	static sf::Vector2i GetMousePosition();
 };
 

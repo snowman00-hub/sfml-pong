@@ -50,4 +50,27 @@ void SceneDev1::Update(float dt)
 	sf::Vector2f pos = testGo->GetPosition();
 	pos += dir * 100.f * dt;
 	testGo->SetPosition(pos);
+
+	// test Code
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Button::Left))
+	{
+		std::cout << "Mouse Left Down" << std::endl;
+		sf::Vector2i mousePos = InputMgr::GetMousePosition();
+		std::cout << "(" << mousePos.x << ", " << mousePos.y <<
+			")" << std::endl;
+	}
+	if (InputMgr::GetMouseButton(sf::Mouse::Button::Left))
+	{
+		std::cout << "Mouse Left" << std::endl;
+		sf::Vector2i mousePos = InputMgr::GetMousePosition();
+		std::cout << "(" << mousePos.x << ", " << mousePos.y <<
+			")" << std::endl;
+	}
+	if (InputMgr::GetMouseButtonUp(sf::Mouse::Button::Left))
+	{
+		std::cout << "Mouse Left Up" << std::endl;
+		sf::Vector2i mousePos = InputMgr::GetMousePosition();
+		std::cout << "(" << mousePos.x << ", " << mousePos.y <<
+			")" << std::endl;
+	}
 }

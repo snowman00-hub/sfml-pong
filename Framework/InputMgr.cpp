@@ -5,6 +5,8 @@ std::list<sf::Keyboard::Key> InputMgr::downKeys;
 std::list<sf::Keyboard::Key> InputMgr::heldKeys;
 std::list<sf::Keyboard::Key> InputMgr::upKeys;
 
+std::vector<int> InputMgr::mouseButtons;
+
 std::unordered_map<Axis, AxisInfo> InputMgr::axisInfoMap;
 
 void InputMgr::Init()
@@ -24,16 +26,28 @@ void InputMgr::Init()
 	infoV.negatives.push_back(sf::Keyboard::W);
 	infoV.negatives.push_back(sf::Keyboard::Up);
 	axisInfoMap.insert({ Axis::Vertical ,infoV });
+
+	mouseButtons.resize((int)sf::Mouse::ButtonCount);
 }
 
 void InputMgr::Clear() 
 {
 	downKeys.clear();
 	upKeys.clear();
+
+	std::fill(mouseButtons.begin(), mouseButtons.end(), 0);
 }
 
 void InputMgr::UpdateEvent(const sf::Event& ev) 
 {
+	for (int i = 0; i < sf::Mouse::ButtonCount; i++)
+	{
+		if (sf::Mouse::isButtonPressed((sf::Mouse::Button)i))
+		{
+			mouseButtons[i] = 2;
+		}
+	}
+
 	switch (ev.type)
 	{
 	case sf::Event::KeyPressed:
@@ -46,6 +60,12 @@ void InputMgr::UpdateEvent(const sf::Event& ev)
 	case sf::Event::KeyReleased:
 		Remove(heldKeys, ev.key.code);
 		upKeys.push_back(ev.key.code);
+		break;
+	case sf::Event::MouseButtonPressed:
+		mouseButtons[(int)ev.mouseButton.button] = 1;
+		break;
+	case sf::Event::MouseButtonReleased:
+		mouseButtons[(int)ev.mouseButton.button] = 3;
 		break;
 	}
 }
@@ -109,5 +129,25 @@ float InputMgr::GetAxisRaw(Axis axis)
 float InputMgr::GetAxis(Axis axis)
 {
 	return 0.0f;
+}
+
+bool InputMgr::GetMouseButtonDown(sf::Mouse::Button button)
+{
+	return mouseButtons[(int)button] == 1;
+}
+
+bool InputMgr::GetMouseButtonUp(sf::Mouse::Button button)
+{
+	return mouseButtons[(int)button] == 3;
+}
+
+bool InputMgr::GetMouseButton(sf::Mouse::Button button)
+{
+	return mouseButtons[(int)button] == 2;
+}
+
+sf::Vector2i InputMgr::GetMousePosition()
+{
+	return sf::Mouse::getPosition();
 }
 
