@@ -49,7 +49,7 @@ void Scene::Update(float dt)
 	{
 		obj->Update(dt);
 	}
-}//
+}
 
 void Scene::Draw(sf::RenderWindow& window)
 {
