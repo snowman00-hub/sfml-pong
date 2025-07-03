@@ -15,6 +15,9 @@ protected:
 
 public:
 
+	SortingLayers sortingLayer = SortingLayers::Default;
+	int sortingOrder = 0;
+
 	GameObject(const std::string& name = "");
 	virtual ~GameObject();
 
