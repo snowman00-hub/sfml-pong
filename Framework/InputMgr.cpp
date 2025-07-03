@@ -5,9 +5,25 @@ std::list<sf::Keyboard::Key> InputMgr::downKeys;
 std::list<sf::Keyboard::Key> InputMgr::heldKeys;
 std::list<sf::Keyboard::Key> InputMgr::upKeys;
 
+std::unordered_map<Axis, AxisInfo> InputMgr::axisInfoMap;
+
 void InputMgr::Init()
 {
+	AxisInfo infoH;
+	infoH.axis = Axis::Horizontal;
+	infoH.positives.push_back(sf::Keyboard::D);
+	infoH.positives.push_back(sf::Keyboard::Right);
+	infoH.negatives.push_back(sf::Keyboard::A);
+	infoH.negatives.push_back(sf::Keyboard::Left);
+	axisInfoMap.insert({ Axis::Horizontal ,infoH });
 
+	AxisInfo infoV;
+	infoV.axis = Axis::Vertical;
+	infoV.positives.push_back(sf::Keyboard::S);
+	infoV.positives.push_back(sf::Keyboard::Down);
+	infoV.negatives.push_back(sf::Keyboard::W);
+	infoV.negatives.push_back(sf::Keyboard::Up);
+	axisInfoMap.insert({ Axis::Vertical ,infoV });
 }
 
 void InputMgr::Clear() 
@@ -62,5 +78,36 @@ bool InputMgr::Contains(const std::list<sf::Keyboard::Key>& list, sf::Keyboard::
 void InputMgr::Remove(std::list<sf::Keyboard::Key>& list, sf::Keyboard::Key key)
 {
 	list.remove(key);
+}
+
+float InputMgr::GetAxisRaw(Axis axis)
+{
+	auto findIt = axisInfoMap.find(axis);
+	if (findIt == axisInfoMap.end())
+		return 0.f;
+
+	const AxisInfo& axisInfo = findIt->second;
+
+	auto it = heldKeys.rbegin();
+	while (it != heldKeys.rend())
+	{
+		sf::Keyboard::Key code = *it;
+		if (Contains(axisInfo.positives, code))
+		{
+			return 1.f;
+		}
+		if (Contains(axisInfo.negatives, code))
+		{
+			return -1.f;
+		}
+		++it;
+	}
+
+	return 0.0f;
+}
+
+float InputMgr::GetAxis(Axis axis)
+{
+	return 0.0f;
 }
 

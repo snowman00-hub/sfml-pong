@@ -18,7 +18,6 @@ public:
 	void SetCharacterSize(unsigned int size);
 	void SetFillColor(const sf::Color& color);
 	std::string GetString() const;
-
 	sf::Text& GetText() { return text; }
 	const sf::Text& GetText() const { return text; }
 
