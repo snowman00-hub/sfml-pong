@@ -72,6 +72,33 @@ void InputMgr::UpdateEvent(const sf::Event& ev)
 void InputMgr::Update(float dt) 
 {
 	mousePosition = sf::Mouse::getPosition(FRAMEWORK.GetWindow());
+
+	for (auto& pair : axisInfoMap)
+	{
+		AxisInfo& axisInfo = pair.second;
+		float raw = GetAxisRaw(axisInfo.axis);
+		float dir = raw;
+		if (raw == 0.f && axisInfo.value != 0.f)
+		{
+			dir = axisInfo.value > 0.f ? -1.f : 1.f;
+		}
+
+		axisInfo.value += dir * axisInfo.sensi * dt;
+		if (axisInfo.value < -1.f)
+		{
+			axisInfo.value = -1.f;
+		}
+		else if (axisInfo.value > 1.f)
+		{
+			axisInfo.value = 1.f;
+		}
+
+		float stopThreshold = std::abs(dir * axisInfo.sensi * dt);
+		if (raw == 0.f && std::abs(axisInfo.value) < stopThreshold)
+		{
+			axisInfo.value = 0.f;
+		}
+	}
 }
 
 bool InputMgr::GetKeyDown(sf::Keyboard::Key key)
@@ -127,7 +154,12 @@ float InputMgr::GetAxisRaw(Axis axis)
 
 float InputMgr::GetAxis(Axis axis)
 {
-	return 0.0f;
+	auto findIt = axisInfoMap.find(axis);
+	if (findIt == axisInfoMap.end())
+	{
+		return 0.0f;
+	}
+	return findIt->second.value;
 }
 
 bool InputMgr::GetMouseButtonDown(sf::Mouse::Button key)
@@ -149,4 +181,3 @@ sf::Vector2i InputMgr::GetMousePosition()
 {
 	return mousePosition;
 }
-
