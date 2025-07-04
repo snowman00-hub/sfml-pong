@@ -84,14 +84,7 @@ void InputMgr::Update(float dt)
 		}
 
 		axisInfo.value += dir * axisInfo.sensi * dt;
-		if (axisInfo.value < -1.f)
-		{
-			axisInfo.value = -1.f;
-		}
-		else if (axisInfo.value > 1.f)
-		{
-			axisInfo.value = 1.f;
-		}
+		axisInfo.value = Utils::Clamp(axisInfo.value, -1.f, 1.f);
 
 		float stopThreshold = std::abs(dir * axisInfo.sensi * dt);
 		if (raw == 0.f && std::abs(axisInfo.value) < stopThreshold)
