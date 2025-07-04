@@ -7,12 +7,13 @@ class Ball;
 class SceneGameVs : public Scene
 {
 protected:
-	Bat* bat1 = nullptr;
-	Ball* ball1 = nullptr;
-	Bat* bat2 = nullptr;
-	Ball* ball2 = nullptr;
+	Bat* batLeft = nullptr;
+	Bat* batRight = nullptr;
+	Ball* ball = nullptr;
 
 	bool ballActive = false;
+
+	sf::Vector2f batRightPos;
 
 public:
 	SceneGameVs();

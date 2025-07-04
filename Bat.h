@@ -11,6 +11,10 @@ protected:
 
 	float minX = 0.f;
 	float maxX = 0.f;
+	float minY = 0.f;
+	float maxY = 0.f;
+
+	bool soloMode = true;
 
 public:
 	Bat(const std::string& name = "");
@@ -21,6 +25,8 @@ public:
 	void SetScale(const sf::Vector2f& s) override;
 	void SetOrigin(const sf::Vector2f& o) override;
 	void SetOrigin(Origins preset) override;
+
+	void SetVsMode() { soloMode = false; }
 	
 	void Init() override;
 	void Release() override;

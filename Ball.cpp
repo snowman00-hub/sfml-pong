@@ -45,7 +45,15 @@ void Ball::Init()
 {
 	shape.setRadius(10.f);
 	shape.setFillColor(sf::Color::Yellow);
-	SetOrigin(Origins::BC);
+
+	if (soloMode)
+	{
+		SetOrigin(Origins::BC);
+	}
+	else
+	{
+		SetOrigin(Origins::MC);
+	}
 }
 
 void Ball::Release()
@@ -55,14 +63,28 @@ void Ball::Release()
 void Ball::Reset()
 {
 	sf::FloatRect bounds = FRAMEWORK.GetWindowBounds();
-	SetPosition({ bounds.width * 0.5f, bounds.height - 20.f });
-
 	float radius = shape.getRadius();
-	minX = bounds.left + radius;
-	maxX = (bounds.left + bounds.width) - radius;
 
-	minY = bounds.top + radius * 2.f;
-	maxY = bounds.top + bounds.height + radius * 2.f;
+	if (soloMode)
+	{
+		SetPosition({ bounds.width * 0.5f, bounds.height - 20.f });
+
+		minX = bounds.left + radius;
+		maxX = (bounds.left + bounds.width) - radius;
+
+		minY = bounds.top + radius * 2.f;
+		maxY = bounds.top + bounds.height + radius * 2.f;
+	}
+	else
+	{
+		SetPosition({ bounds.width - 20.f - radius, bounds.height * 0.5f });
+
+		minX = bounds.left - radius;
+		maxX = (bounds.left + bounds.width) + radius;
+
+		minY = bounds.top + radius;
+		maxY = bounds.top + bounds.height - radius;
+	}
 
 	direction = { 0.f,0.f };
 	speed = 0.f;
@@ -72,38 +94,85 @@ void Ball::Update(float dt)
 {
 	sf::Vector2f pos = GetPosition() + direction * speed * dt;
 
-	if (pos.x < minX)
+	if (soloMode)
 	{
-		pos.x = minX;
-		direction.x *= -1.f;
-	}
-	else if (pos.x > maxX)
-	{
-		pos.x = maxX;
-		direction.x *= -1.f;
-	}
-
-	if (pos.y < minY)
-	{
-		pos.y = minY;
-		direction.y *= -1.f;
-	}
-	else if (pos.y > maxY)
-	{
-		if (SCENE_MGR.GetCurrentSceneId() == SceneIds::Game)
+		if (pos.x < minX)
 		{
-			SceneGame* scene = (SceneGame*)SCENE_MGR.GetCurrentScene();
-			scene->SetGameOver();
+			pos.x = minX;
+			direction.x *= -1.f;
+		}
+		else if (pos.x > maxX)
+		{
+			pos.x = maxX;
+			direction.x *= -1.f;
+		}
+
+		if (pos.y < minY)
+		{
+			pos.y = minY;
+			direction.y *= -1.f;
+		}
+		else if (pos.y > maxY)
+		{
+			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::Game)
+			{
+				SceneGame* scene = (SceneGame*)SCENE_MGR.GetCurrentScene();
+				scene->SetGameOver();
+			}
+		}
+
+		if (bat != nullptr)
+		{
+			const sf::FloatRect& batBounds = bat->GetGlobalBounds();
+			if (shape.getGlobalBounds().intersects(batBounds))
+			{
+				pos.y = batBounds.top;
+				direction.y *= -1.f;
+			}
 		}
 	}
-
-	if (bat != nullptr)
+	else
 	{
-		const sf::FloatRect& batBounds = bat->GetGlobalBounds();
-		if (shape.getGlobalBounds().intersects(batBounds))
+		if (pos.y < minY)
 		{
-			pos.y = batBounds.top;
+			pos.y = minY;
 			direction.y *= -1.f;
+		}
+		else if (pos.y > maxY)
+		{
+			pos.y = maxY;
+			direction.y *= -1.f;
+		}
+
+		if (pos.x < minX)
+		{
+			// batLeft 패배
+		}
+		else if (pos.x > maxX)
+		{
+			// batRight 패배
+		}
+
+		if (bat != nullptr)
+		{
+			sf::FloatRect batBounds = bat->GetGlobalBounds();
+			batBounds.left -= shape.getRadius();
+			if (shape.getGlobalBounds().intersects(batBounds))
+			{
+				pos.x = batBounds.left - shape.getRadius();
+				direction.x *= -1.f;
+			}
+		}
+
+		if (bat2 != nullptr)
+		{
+			sf::FloatRect batBounds = bat2->GetGlobalBounds();
+			batBounds.left += shape.getRadius();
+			if (shape.getGlobalBounds().intersects(batBounds))
+			{
+				pos.x = batBounds.left + shape.getRadius();
+				direction.x *= -1.f;
+			}
 		}
 	}
 

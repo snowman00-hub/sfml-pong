@@ -41,9 +41,17 @@ void Bat::SetOrigin(Origins preset)
 
 void Bat::Init()
 {
-	shape.setSize({ 100.f,5.f });
-	shape.setFillColor(sf::Color::White);
-	SetOrigin(Origins::TC);
+	if (soloMode)
+	{
+		shape.setSize({ 100.f,5.f });
+		shape.setFillColor(sf::Color::White);
+		SetOrigin(Origins::TC);
+	}
+	else
+	{
+		shape.setSize({ 5.f,100.f });
+		shape.setFillColor(sf::Color::White);
+	}
 }
 
 void Bat::Release()
@@ -53,19 +61,37 @@ void Bat::Release()
 void Bat::Reset()
 {
 	sf::FloatRect bounds = FRAMEWORK.GetWindowBounds();
-	SetPosition({ bounds.width * 0.5f, bounds.height - 20.f });
-
 	sf::Vector2f size = shape.getSize();
-	minX = bounds.left + size.x * 0.5f;
-	maxX = (bounds.left + bounds.width) - size.x * 0.5f;
+
+	if (soloMode)
+	{
+		SetPosition({ bounds.width * 0.5f, bounds.height - 20.f });
+		minX = bounds.left + size.x * 0.5f;
+		maxX = (bounds.left + bounds.width) - size.x * 0.5f;
+	}
+	else
+	{		
+		minY = bounds.top + size.y * 0.5f;
+		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
+	}
 }
 
 void Bat::Update(float dt)
 {
-	direction.x = InputMgr::GetAxis(Axis::Horizontal);
-	sf::Vector2f pos = GetPosition() + direction * speed * dt;
-	pos.x = Utils::Clamp(pos.x, minX, maxX);
-	SetPosition(pos);
+	if (soloMode)
+	{
+		direction.x = InputMgr::GetAxis(Axis::Horizontal);
+		sf::Vector2f pos = GetPosition() + direction * speed * dt;
+		pos.x = Utils::Clamp(pos.x, minX, maxX);
+		SetPosition(pos);
+	}
+	else
+	{
+		direction.y = InputMgr::GetAxis(Axis::Vertical);
+		sf::Vector2f pos = GetPosition() + direction * speed * dt;
+		pos.y = Utils::Clamp(pos.y, minY, maxY);
+		SetPosition(pos);
+	}
 }
 
 void Bat::Draw(sf::RenderWindow& window)
