@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "InputMgr.h"
 
-std::list<sf::Keyboard::Key> InputMgr::downKeys;
-std::list<sf::Keyboard::Key> InputMgr::heldKeys;
-std::list<sf::Keyboard::Key> InputMgr::upKeys;
-
-std::vector<int> InputMgr::mouseButtons;
+std::list<int> InputMgr::downKeys;
+std::list<int> InputMgr::heldKeys;
+std::list<int> InputMgr::upKeys;
 
 std::unordered_map<Axis, AxisInfo> InputMgr::axisInfoMap;
+
+sf::Vector2i InputMgr::mousePosition;
 
 void InputMgr::Init()
 {
@@ -26,28 +26,16 @@ void InputMgr::Init()
 	infoV.negatives.push_back(sf::Keyboard::W);
 	infoV.negatives.push_back(sf::Keyboard::Up);
 	axisInfoMap.insert({ Axis::Vertical ,infoV });
-
-	mouseButtons.resize((int)sf::Mouse::ButtonCount);
 }
 
 void InputMgr::Clear() 
 {
 	downKeys.clear();
 	upKeys.clear();
-
-	std::fill(mouseButtons.begin(), mouseButtons.end(), 0);
 }
 
 void InputMgr::UpdateEvent(const sf::Event& ev) 
 {
-	for (int i = 0; i < sf::Mouse::ButtonCount; i++)
-	{
-		if (sf::Mouse::isButtonPressed((sf::Mouse::Button)i))
-		{
-			mouseButtons[i] = 2;
-		}
-	}
-
 	switch (ev.type)
 	{
 	case sf::Event::KeyPressed:
@@ -62,17 +50,28 @@ void InputMgr::UpdateEvent(const sf::Event& ev)
 		upKeys.push_back(ev.key.code);
 		break;
 	case sf::Event::MouseButtonPressed:
-		mouseButtons[(int)ev.mouseButton.button] = 1;
+	{
+		int code = sf::Keyboard::KeyCount + ev.mouseButton.button;
+		if (!Contains(heldKeys, code))
+		{
+			downKeys.push_back(code);
+			heldKeys.push_back(code);
+		}
+	}
 		break;
 	case sf::Event::MouseButtonReleased:
-		mouseButtons[(int)ev.mouseButton.button] = 3;
+	{
+		int code = sf::Keyboard::KeyCount + ev.mouseButton.button;
+		Remove(heldKeys, code);
+		upKeys.push_back(code);
+	}
 		break;
 	}
 }
 
 void InputMgr::Update(float dt) 
 {
-
+	mousePosition = sf::Mouse::getPosition(FRAMEWORK.GetWindow());
 }
 
 bool InputMgr::GetKeyDown(sf::Keyboard::Key key)
@@ -90,12 +89,12 @@ bool InputMgr::GetKey(sf::Keyboard::Key key)
 	return Contains(heldKeys, key);
 }
 
-bool InputMgr::Contains(const std::list<sf::Keyboard::Key>& list, sf::Keyboard::Key key)
+bool InputMgr::Contains(const std::list<int>& list, int key)
 {
 	return std::find(list.begin(), list.end(), key) != list.end();
 }
 
-void InputMgr::Remove(std::list<sf::Keyboard::Key>& list, sf::Keyboard::Key key)
+void InputMgr::Remove(std::list<int>& list, int key)
 {
 	list.remove(key);
 }
@@ -111,7 +110,7 @@ float InputMgr::GetAxisRaw(Axis axis)
 	auto it = heldKeys.rbegin();
 	while (it != heldKeys.rend())
 	{
-		sf::Keyboard::Key code = *it;
+		int code = *it;
 		if (Contains(axisInfo.positives, code))
 		{
 			return 1.f;
@@ -131,23 +130,23 @@ float InputMgr::GetAxis(Axis axis)
 	return 0.0f;
 }
 
-bool InputMgr::GetMouseButtonDown(sf::Mouse::Button button)
+bool InputMgr::GetMouseButtonDown(sf::Mouse::Button key)
 {
-	return mouseButtons[(int)button] == 1;
+	return Contains(downKeys, sf::Keyboard::KeyCount + key);
 }
 
-bool InputMgr::GetMouseButtonUp(sf::Mouse::Button button)
+bool InputMgr::GetMouseButtonUp(sf::Mouse::Button key)
 {
-	return mouseButtons[(int)button] == 3;
+	return Contains(upKeys, sf::Keyboard::KeyCount + key);
 }
 
-bool InputMgr::GetMouseButton(sf::Mouse::Button button)
+bool InputMgr::GetMouseButton(sf::Mouse::Button key)
 {
-	return mouseButtons[(int)button] == 2;
+	return Contains(heldKeys, sf::Keyboard::KeyCount + key);
 }
 
 sf::Vector2i InputMgr::GetMousePosition()
 {
-	return sf::Mouse::getPosition();
+	return mousePosition;
 }
 

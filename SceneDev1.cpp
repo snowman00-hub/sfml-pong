@@ -59,13 +59,6 @@ void SceneDev1::Update(float dt)
 		std::cout << "(" << mousePos.x << ", " << mousePos.y <<
 			")" << std::endl;
 	}
-	if (InputMgr::GetMouseButton(sf::Mouse::Button::Left))
-	{
-		std::cout << "Mouse Left" << std::endl;
-		sf::Vector2i mousePos = InputMgr::GetMousePosition();
-		std::cout << "(" << mousePos.x << ", " << mousePos.y <<
-			")" << std::endl;
-	}
 	if (InputMgr::GetMouseButtonUp(sf::Mouse::Button::Left))
 	{
 		std::cout << "Mouse Left Up" << std::endl;
