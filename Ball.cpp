@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Ball.h"
+#include "Bat.h"
+#include <SceneGame.h>
 
 Ball::Ball(const std::string& name)
 	: GameObject(name)
@@ -60,7 +62,7 @@ void Ball::Reset()
 	maxX = (bounds.left + bounds.width) - radius;
 
 	minY = bounds.top + radius * 2.f;
-	maxY = bounds.top + bounds.height;
+	maxY = bounds.top + bounds.height + radius * 2.f;
 
 	direction = { 0.f,0.f };
 	speed = 0.f;
@@ -88,8 +90,21 @@ void Ball::Update(float dt)
 	}
 	else if (pos.y > maxY)
 	{
-		pos.y = maxY;
-		direction.y *= -1.f;
+		if (SCENE_MGR.GetCurrentSceneId() == SceneIds::Game)
+		{
+			SceneGame* scene = (SceneGame*)SCENE_MGR.GetCurrentScene();
+			scene->SetGameOver();
+		}
+	}
+
+	if (bat != nullptr)
+	{
+		const sf::FloatRect& batBounds = bat->GetGlobalBounds();
+		if (shape.getGlobalBounds().intersects(batBounds))
+		{
+			pos.y = batBounds.top;
+			direction.y *= -1.f;
+		}
 	}
 
 	SetPosition(pos);

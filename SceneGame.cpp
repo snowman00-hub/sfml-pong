@@ -10,17 +10,18 @@ SceneGame::SceneGame()
 
 void SceneGame::Init()
 {
-	Scene::Init();
-
 	bat = (Bat*)AddGameObject(new Bat("Bat"));
 	ball = (Ball*)AddGameObject(new Ball("Ball"));
+	ball->SetBat(bat);
+
+	Scene::Init();
 }
 
 void SceneGame::Enter()
-{
-	Scene::Enter();
-	
+{	
 	ballActive = false;
+
+	Scene::Enter();
 }
 
 void SceneGame::Update(float dt)
@@ -40,4 +41,9 @@ void SceneGame::Update(float dt)
 			ball->Fire(dir, 500.f);
 		}
 	}
+}
+
+void SceneGame::SetGameOver()
+{
+	SCENE_MGR.ChangeScene(SceneIds::Game);
 }

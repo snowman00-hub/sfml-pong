@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
+class Bat;
+
 class Ball : public GameObject
 {
 protected:	
@@ -8,6 +10,8 @@ protected:
 
 	float speed = 0.f;
 	sf::Vector2f direction;
+
+	Bat* bat = nullptr;
 
 	float minX = 0.f;
 	float maxX = 0.f;
@@ -31,4 +35,5 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 	void Fire(const sf::Vector2f& d, float s);
+	void SetBat(Bat* bat) { this->bat = bat; }
 };
