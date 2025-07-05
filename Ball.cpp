@@ -2,6 +2,7 @@
 #include "Ball.h"
 #include "Bat.h"
 #include <SceneGame.h>
+#include <SceneGameVs.h>
 
 Ball::Ball(const std::string& name)
 	: GameObject(name)
@@ -147,10 +148,20 @@ void Ball::Update(float dt)
 		if (pos.x < minX)
 		{
 			// batLeft 패배
+			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::GameVs)
+			{
+				SceneGameVs* scene = (SceneGameVs*)SCENE_MGR.GetCurrentScene();
+				scene->SetGameOver();
+			}
 		}
 		else if (pos.x > maxX)
 		{
 			// batRight 패배
+			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::GameVs)
+			{
+				SceneGameVs* scene = (SceneGameVs*)SCENE_MGR.GetCurrentScene();
+				scene->SetGameOver();
+			}
 		}
 
 		if (bat != nullptr)
@@ -170,7 +181,7 @@ void Ball::Update(float dt)
 			batBounds.left += shape.getRadius();
 			if (shape.getGlobalBounds().intersects(batBounds))
 			{
-				pos.x = batBounds.left + shape.getRadius();
+				pos.x = batBounds.left + batBounds.width + shape.getRadius();
 				direction.x *= -1.f;
 			}
 		}

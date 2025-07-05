@@ -13,7 +13,7 @@ protected:
 
 	bool ballActive = false;
 
-	sf::Vector2f batRightPos;
+	sf::Vector2f ballStartPos;
 
 public:
 	SceneGameVs();

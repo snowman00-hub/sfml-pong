@@ -70,7 +70,7 @@ void Bat::Reset()
 		maxX = (bounds.left + bounds.width) - size.x * 0.5f;
 	}
 	else
-	{		
+	{
 		minY = bounds.top + size.y * 0.5f;
 		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
 	}

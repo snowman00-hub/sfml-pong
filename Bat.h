@@ -20,6 +20,8 @@ public:
 	Bat(const std::string& name = "");
 	~Bat() = default;
 
+	sf::Vector2f GetBatSize() const { return shape.getSize(); }
+
 	void SetPosition(const sf::Vector2f& pos) override;
 	void SetRotation(float rot) override;
 	void SetScale(const sf::Vector2f& s) override;
