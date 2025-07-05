@@ -15,6 +15,7 @@ protected:
 	float maxY = 0.f;
 
 	bool soloMode = true;
+	bool Left = false;
 
 public:
 	Bat(const std::string& name = "");
@@ -29,6 +30,7 @@ public:
 	void SetOrigin(Origins preset) override;
 
 	void SetVsMode() { soloMode = false; }
+	void SetLeft() { Left = true; }
 	
 	void Init() override;
 	void Release() override;

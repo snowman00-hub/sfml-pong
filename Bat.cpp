@@ -47,10 +47,17 @@ void Bat::Init()
 		shape.setFillColor(sf::Color::White);
 		SetOrigin(Origins::TC);
 	}
+	else if (Left)
+	{
+		shape.setSize({ 5.f,100.f });
+		shape.setFillColor(sf::Color::White);
+		SetOrigin(Origins::MR);
+	}
 	else
 	{
 		shape.setSize({ 5.f,100.f });
 		shape.setFillColor(sf::Color::White);
+		SetOrigin(Origins::ML);
 	}
 }
 
@@ -69,8 +76,15 @@ void Bat::Reset()
 		minX = bounds.left + size.x * 0.5f;
 		maxX = (bounds.left + bounds.width) - size.x * 0.5f;
 	}
+	else if (Left)
+	{
+		SetPosition({ 20.f, bounds.height * 0.5f });
+		minY = bounds.top + size.y * 0.5f;
+		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
+	}
 	else
 	{
+		SetPosition({ bounds.width - 20.f, bounds.height * 0.5f });
 		minY = bounds.top + size.y * 0.5f;
 		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
 	}
@@ -85,9 +99,16 @@ void Bat::Update(float dt)
 		pos.x = Utils::Clamp(pos.x, minX, maxX);
 		SetPosition(pos);
 	}
+	else if (Left)
+	{
+		direction.y = InputMgr::GetAxis(Axis::WS);
+		sf::Vector2f pos = GetPosition() + direction * speed * dt;
+		pos.y = Utils::Clamp(pos.y, minY, maxY);
+		SetPosition(pos);
+	}
 	else
 	{
-		direction.y = InputMgr::GetAxis(Axis::Vertical);
+		direction.y = InputMgr::GetAxis(Axis::UpDownArrows);
 		sf::Vector2f pos = GetPosition() + direction * speed * dt;
 		pos.y = Utils::Clamp(pos.y, minY, maxY);
 		SetPosition(pos);

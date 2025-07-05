@@ -18,6 +18,7 @@ void SceneGameVs::Init()
 	ball->SetBat2(batLeft);
 	ball->SetVsMode();
 
+	batLeft->SetLeft();
 	batLeft->SetVsMode();
 	batRight->SetVsMode();
 
@@ -26,13 +27,6 @@ void SceneGameVs::Init()
 
 void SceneGameVs::Enter()
 {
-	batLeft->SetOrigin(Origins::MR); // 사이즈 정해주고 난 뒤에 오리진 설정할 수 있음
-	batRight->SetOrigin(Origins::ML);
-
-	sf::FloatRect bounds = FRAMEWORK.GetWindowBounds();
-	batLeft->SetPosition({ 20.f, bounds.height * 0.5f });
-	batRight->SetPosition({ bounds.width - 20.f, bounds.height * 0.5f });
-
 	ballActive = false;
 
 	Scene::Enter();
