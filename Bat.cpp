@@ -78,13 +78,13 @@ void Bat::Reset()
 	}
 	else if (Left)
 	{
-		SetPosition({ 20.f, bounds.height * 0.5f });
+		SetPosition({ 220.f, bounds.height * 0.5f });
 		minY = bounds.top + size.y * 0.5f;
 		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
 	}
 	else
 	{
-		SetPosition({ bounds.width - 20.f, bounds.height * 0.5f });
+		SetPosition({ bounds.width - 220.f, bounds.height * 0.5f });
 		minY = bounds.top + size.y * 0.5f;
 		maxY = (bounds.top + bounds.height) - size.y * 0.5f;
 	}

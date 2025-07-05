@@ -2,6 +2,7 @@
 #include "SceneGameVs.h"
 #include "Bat.h"
 #include "Ball.h"
+#include "TextGo.h"
 
 SceneGameVs::SceneGameVs()
 	: Scene(SceneIds::GameVs)
@@ -22,14 +23,29 @@ void SceneGameVs::Init()
 	batLeft->SetVsMode();
 	batRight->SetVsMode();
 
+	sf::FloatRect bounds = FRAMEWORK.GetWindowBounds();
+	line.setSize({ 5.f, bounds.height});
+	line.setFillColor(sf::Color::Cyan);
+	line.setPosition(bounds.width * 0.5f, 0.f);
+	Utils::SetOrigin(line, Origins::TC);
+
+	fontIds.push_back("fonts/DS-DIGIT.TTF");
+	scoreMessage = (TextGo*)AddGameObject(new TextGo("fonts/DS-DIGIT.TTF"));
+	scoreMessage->SetCharacterSize(100);
+	scoreMessage->SetFillColor(sf::Color::Green);
+	scoreMessage->SetPosition({ bounds.width * 0.5f,  0.f });
+
 	Scene::Init();
 }
 
 void SceneGameVs::Enter()
 {
-	ballActive = false;
-
 	Scene::Enter();
+
+	scoreMessage->SetString(std::to_string(leftScore) + "      " + std::to_string(rightScore));
+	scoreMessage->SetOrigin(Origins::TC);
+
+	ballActive = false;
 }
 
 void SceneGameVs::Update(float dt)
@@ -55,6 +71,13 @@ void SceneGameVs::Update(float dt)
 			ball->Fire(dir, 500.f);
 		}
 	}
+}
+
+void SceneGameVs::Draw(sf::RenderWindow& window)
+{
+	window.draw(line);
+
+	Scene::Draw(window);
 }
 
 void SceneGameVs::SetGameOver()

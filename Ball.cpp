@@ -147,10 +147,10 @@ void Ball::Update(float dt)
 
 		if (pos.x < minX)
 		{
-			// batLeft ÆÐ¹è
 			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::GameVs)
 			{
 				SceneGameVs* scene = (SceneGameVs*)SCENE_MGR.GetCurrentScene();
+				scene->RightVictory();
 				scene->SetGameOver();
 			}
 		}
@@ -160,6 +160,7 @@ void Ball::Update(float dt)
 			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::GameVs)
 			{
 				SceneGameVs* scene = (SceneGameVs*)SCENE_MGR.GetCurrentScene();
+				scene->LeftVictory();
 				scene->SetGameOver();
 			}
 		}

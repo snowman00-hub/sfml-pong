@@ -3,6 +3,7 @@
 
 class Bat;
 class Ball;
+class TextGo;
 
 class SceneGameVs : public Scene
 {
@@ -11,9 +12,16 @@ protected:
 	Bat* batRight = nullptr;
 	Ball* ball = nullptr;
 
-	bool ballActive = false;
+	TextGo* scoreMessage = nullptr;
+
+	int leftScore = 0;
+	int rightScore = 0;
+
+	sf::RectangleShape line;
 
 	sf::Vector2f ballStartPos;
+
+	bool ballActive = false;
 
 public:
 	SceneGameVs();
@@ -23,7 +31,10 @@ public:
 	void Enter() override;
 
 	void Update(float dt) override;
+	void Draw(sf::RenderWindow& window) override;
 
 	void SetGameOver();
+	void LeftVictory() { leftScore++; }
+	void RightVictory() { rightScore++; }
 };
 
