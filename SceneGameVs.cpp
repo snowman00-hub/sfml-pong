@@ -35,6 +35,12 @@ void SceneGameVs::Init()
 	scoreMessage->SetFillColor(sf::Color::Green);
 	scoreMessage->SetPosition({ bounds.width * 0.5f,  0.f });
 
+	guideMessage = (TextGo*)AddGameObject(new TextGo("fonts/DS-DIGIT.TTF"));
+	guideMessage->SetCharacterSize(80);
+	guideMessage->SetFillColor(sf::Color::Blue);
+	guideMessage->SetPosition({ bounds.width * 0.5f,  bounds.height * 0.35f });
+	guideMessage->SetString("Space to Start");
+
 	Scene::Init();
 }
 
@@ -44,6 +50,8 @@ void SceneGameVs::Enter()
 
 	scoreMessage->SetString(std::to_string(leftScore) + "      " + std::to_string(rightScore));
 	scoreMessage->SetOrigin(Origins::TC);
+	guideMessage->SetActive(true);
+	guideMessage->SetOrigin(Origins::TC);
 
 	ballActive = false;
 }
@@ -61,6 +69,7 @@ void SceneGameVs::Update(float dt)
 		if (InputMgr::GetKeyDown(sf::Keyboard::Space))
 		{
 			ballActive = true;
+			guideMessage->SetActive(false);
 			
 			sf::Vector2f dir(-1.f, -1.f);
 			dir.y = InputMgr::GetAxisRaw(Axis::Vertical);
@@ -68,7 +77,7 @@ void SceneGameVs::Update(float dt)
 				dir.y = -1.f;
 			Utils::Normalize(dir);
 
-			ball->Fire(dir, 500.f);
+			ball->Fire(dir, 700.f);
 		}
 	}
 }

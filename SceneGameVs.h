@@ -13,6 +13,7 @@ protected:
 	Ball* ball = nullptr;
 
 	TextGo* scoreMessage = nullptr;
+	TextGo* guideMessage = nullptr;
 
 	int leftScore = 0;
 	int rightScore = 0;
@@ -24,6 +25,7 @@ protected:
 	bool ballActive = false;
 
 public:
+
 	SceneGameVs();
 	~SceneGameVs() override = default;
 

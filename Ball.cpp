@@ -156,7 +156,6 @@ void Ball::Update(float dt)
 		}
 		else if (pos.x > maxX)
 		{
-			// batRight ÆÐ¹è
 			if (SCENE_MGR.GetCurrentSceneId() == SceneIds::GameVs)
 			{
 				SceneGameVs* scene = (SceneGameVs*)SCENE_MGR.GetCurrentScene();
